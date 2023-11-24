@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+            <div class="flex flex-col justify-center p-8 md:p-14">
+                <span class="mb-3 text-4xl font-bold">Bienvenido</span>
+                <span class="font-light text-gray-400 mb-8">Inicia sesión</span>
+                {% if error %}
+                <div id="alerta-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{error}}</span>
+                </div>
+                {% endif %} 
+                
+                <form method="post">
+                    
+                {% csrf_token %}
+                    <div class="py-4">
+                        <label class="mb-2 text-md">Nombre de usuario</label>
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="username" id="username">
+                    </div>
+
+                    <div class="py-4">
+                        <label class="mb-2 text-md">Contraseña</label>
+                        <input type="password" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="password" id="password">
+                    </div>
+                    <button class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-blue-700">Iniciar sesión</button>
+                </form>
+                    <div class="text-center text-gray-400">
+                    ¿No tienes una cuenta? <a href="{% url 'signup'%}" class="font-bold text-black">Crea una</a>
+                </div> 
+            </div>
+            <div class="relative">
+                <img src="../../static/img/login.jpeg" alt="Concert imagen" class="w-[400px] h-full hidden max-w-full rounded-r-2xl md:block object-cover">
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
