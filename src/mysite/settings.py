@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp'
+    'myapp',
+    'djongo'
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,10 @@ DATABASES = {
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': 'mongodb+srv://root:qHMEGeaehFj8a0D7@cluster0.px2sqnh.mongodb.net/test'
-        }  
+        },
+        'OPTIONS': {
+            'use_tz': False,
+        },
     }
 }
 

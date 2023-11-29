@@ -36,7 +36,9 @@
             </div>
             <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div class="flex flex-shrink-0 items-center">
-                <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
+                <a href="{% url 'dashboard'%}" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                  <span class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">EasyTicket</span>
+                </a>
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
@@ -53,11 +55,11 @@
               <div class="relative ml-3">
                 <div>
                   <a href="{% url 'perfil'%}">
-                    <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                       <span class="absolute -inset-1.5"></span>
                       <span class="sr-only">Open user menu</span>
-                      <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                    </button>
+                      <svg class="h-9 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
                   </a>
                 </div>
       
@@ -87,6 +89,35 @@
     </nav>
       
     {% block content %} {% endblock %}
+
+
+    <footer class="bg-blue-600 shadow mt-12"> <!-- Para cuando este en modo oscuro: dark:bg-gray-900 -->
+      <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+          <div class="sm:flex sm:items-center sm:justify-between">
+              <a href="{% url 'dashboard'%}" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                  <span class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">EasyTicket</span>
+              </a>
+              <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-white sm:mb-0 ">
+                  <li>
+                      <a href="#" class="hover:underline me-4 md:me-6">Sobre nosotros</a>
+                  </li>
+                  <li>
+                      <a href="#" class="hover:underline me-4 md:me-6">Política de privacidad</a>
+                  </li>
+                  <li>
+                      <a href="#" class="hover:underline me-4 md:me-6">Licencia</a>
+                  </li>
+                  <li>
+                      <a href="#" class="hover:underline">Contactanos</a>
+                  </li>
+              </ul>
+          </div>
+          <hr class="my-6 border-gray-200 sm:mx-auto  lg:my-8" />
+          <span class="block text-sm text-white sm:text-center ">© 2023 <a href="https://flowbite.com/" class="hover:underline">EasyTicket</a>. Todos los derechos reservados.</span>
+      </div>
+    </footer>
+
+
     <script src="../../static/js/app.js"></script>
 </body>
 </html>

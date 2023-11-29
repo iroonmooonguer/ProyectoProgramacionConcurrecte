@@ -1,42 +1,22 @@
 {% extends "base_dashboard.html" %}
 
 {% block content %}
-<h1 class="p-8 text-3xl font-bold">Hola</h1>
-<div class="flex min- h-screen items-center justify-center">
+<h1 class="text-center text-4xl mt-10 mb-10 md:mb-0 font-extrabold">Eventos</h1>
+<div class="flex min-h-screen items-center justify-center">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div class="group relative items-center justify-center overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow">
-            <div class="h-96 w-72">
-                <img src="../../../static/img/evento1.jpeg" class="h-full w-full object-cover group-hover:rotate-3 group-hover:scale-125 transition-transform duration-500" alt="Evento imagen">
+        {% for evento in eventos %}
+            <div class="group relative items-center justify-center overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow">
+                <div class="h-96 w-72">
+                    <img src="../../../static/img/{{evento.imagen}}" class="h-full w-full object-cover group-hover:rotate-3 group-hover:scale-125 transition-transform duration-500" alt="Evento imagen">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center px-9 text-center translate-y-[60%] group-hover:translate-y-0 transition-all">
+                    <h1 class="mb-5 text-3xl font-bold text-white">{{evento.title}}</h1>
+                    <p class="text-lg italic text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{evento.description}}</p>
+                    <a href="{% url 'ticket' evento.id %}"><button class="rounded-full shadow shadow-black/60 bg-neutral-800 py-2 px-3.5 text-sm capitalize text-white">Ver más</button></a>
+                </div>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
-            <div class="absolute inset-0 flex flex-col items-center justify-center px-9 text-center translate-y-[60%] group-hover:translate-y-0 transition-all">
-                <h1 class="mb-5 text-3xl font-bold text-white">Tona Fest</h1>
-                <p class="text-lg italic text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Fiesta de Tona sobre el Dia de Muertos</p>
-                <a href="{% url 'ticket'%}"><button class="rounded-full shadow shadow-black/60 bg-neutral-800 py-2 px-3.5 text-sm capitalize text-white">Ver más</button></a>
-            </div>
-        </div>
-        <div class="group relative items-center justify-center overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow">
-            <div class="h-96 w-72">
-                <img src="../../../static/img/evento1.jpeg" class="h-full w-full object-cover group-hover:rotate-3 group-hover:scale-125 transition-transform duration-500" alt="Evento imagen">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
-            <div class="absolute inset-0 flex flex-col items-center justify-center px-9 text-center translate-y-[60%] group-hover:translate-y-0 transition-all">
-                <h1 class="mb-5 text-3xl font-bold text-white">Tona Fest</h1>
-                <p class="text-lg italic text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Fiesta de Tona sobre el Dia de Muertos</p>
-                <a href="{% url 'ticket'%}"><button class="rounded-full shadow shadow-black/60 bg-neutral-800 py-2 px-3.5 text-sm capitalize text-white">Ver más</button></a>
-            </div>
-        </div>
-        <div class="group relative items-center justify-center overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow">
-            <div class="h-96 w-72">
-                <img src="../../../static/img/evento1.jpeg" class="h-full w-full object-cover group-hover:rotate-3 group-hover:scale-125 transition-transform duration-500" alt="Evento imagen">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black group-hover:from-black/70 group-hover:via-black/60 group-hover:to-black/70"></div>
-            <div class="absolute inset-0 flex flex-col items-center justify-center px-9 text-center translate-y-[60%] group-hover:translate-y-0 transition-all">
-                <h1 class="mb-5 text-3xl font-bold text-white">Tona Fest</h1>
-                <p class="text-lg italic text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Fiesta de Tona sobre el Dia de Muertos</p>
-                <a href="{% url 'ticket'%}"><button class="rounded-full shadow shadow-black/60 bg-neutral-800 py-2 px-3.5 text-sm capitalize text-white">Ver más</button></a>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 

@@ -26,7 +26,8 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('my-profile', views.mi_perfil, name='perfil'),
     path('events', views.eventos, name='eventos'),
-    path('ticket_event', views.boleto_vento, name='ticket'),
+    path('ticket_event/<int:evento_id>/', views.boleto_vento, name='ticket'),
+    path('generar_pdf', views.generar_pdf, name='generar_pdf'),
     path('admin/', admin.site.urls)
 ]
 
