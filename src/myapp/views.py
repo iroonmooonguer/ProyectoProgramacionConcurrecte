@@ -1,13 +1,17 @@
+from pymongo import MongoClient
 import threading
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from django.http import HttpResponse
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
-from reportlab.pdfgen import canvas
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .models import Evento
-from datetime import datetime, timedelta
 
 
 def iniciar_sesion(request) :
@@ -114,35 +118,67 @@ def boleto_vento(request, evento_id) :
 
 @login_required
 def generar_pdf(request) :
-    # Obtenemos la información del card desde la solicitud (puedes ajustar esto según tus necesidades)
+    doc = SimpleDocTemplate("ticket.pdf", pagesize=letter)
+    elementos = []
+
+    # Estilo para los párrafos
+    estilos = getSampleStyleSheet()
+
+    # Obtenemos la información del card desde la solicitud
     ticket_info = {
-        'title': request.GET.get('title', ''),
-        'organizer': request.GET.get('organizer', ''),
-        'date': str(request.GET.get('date', '')),  # Convertir a string
-        'time': str(request.GET.get('time', '')),  # Convertir a string
-        'nombre': request.GET.get('nombre', ''),
-        'apellido': request.GET.get('apellido', ''),
+        'Evento': request.GET.get('title', ''),
+        'Organizador': request.GET.get('organizer', ''),
+        'Fecha': str(request.GET.get('date', '')),  # Convertir a string
+        'Hora': str(request.GET.get('time', '')),  # Convertir a string
+        'Nombre': request.GET.get('nombre', ''),
+        'Apellido': request.GET.get('apellido', ''),
     }
 
-    # Iniciamos un hilo para generar el PDF
-    thread = threading.Thread(target=generar_pdf_task, args=(ticket_info,))
-    thread.start()
+    # Crear una tarjeta para la información del ticket
+    tarjeta = [
+        Paragraph(f"<b>{clave}:</b> {valor}", estilos['BodyText']) for clave, valor in ticket_info.items()
+    ]
 
-    # Respondemos inmediatamente al usuario
-    return HttpResponse("Generación de PDF en progreso. Puedes descargarlo más tarde.")
+    elementos.extend(tarjeta)
+    elementos.append(Spacer(1, 12))  # Espaciador entre tarjetas
+    doc.build(elementos)
 
-def generar_pdf_task(ticket_info) :
 
-    # Creamos el objeto HttpResponse con el tipo de contenido PDF.
-    response = HttpResponse(generar_pdf, content_type='application/pdf')
+    pdf = open('ticket.pdf', 'rb')
+
+    response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="ticket.pdf"'
-    response['Cache-Control'] = 'no-cache'
 
-    # Creamos el objeto PDF, usando el objeto response como su "lienzo".
-    p = canvas.Canvas(response)
+    return response 
+    return render(request, "pages/dashboard.html", {
+        'alerta' : 'Boleto virtual descargado correctamente'
+    })
 
-    # Finalizamos y devolvemos el objeto PDF.
-    p.showPage()
-    p.save()
+# Función para realizar la consulta a la base de datos MongoDB
+def consultar_base_de_datos():
+    try:
+        # Conectar a la base de datos MongoDB (ajusta la URL y otros parámetros según tu configuración)
+        client = MongoClient('mongodb+srv://root:qHMEGeaehFj8a0D7@cluster0.px2sqnh.mongodb.net/test')
+        db = client['hgowebcampo']
+        collection = db['myapp_evento']
 
-    return response
+        # Realizar la consulta a MongoDB (cambia esto según tu consulta)
+        consulta = collection.find({})
+        datos = list(consulta)
+
+        client.close()
+
+        if datos:
+            # Llamar a la función para generar el informe PDF
+            generar_pdf(datos)
+            print("Informe PDF generado con éxito.")
+        else:
+            print("No se encontraron datos en la consulta.")
+
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+
+# Utilizar hilos para la consulta y generación de informe
+hilo_consulta = threading.Thread(target=consultar_base_de_datos)
+hilo_consulta.start()
+hilo_consulta.join()
