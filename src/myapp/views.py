@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .models import Evento
-
+from django.db import transaction
 
 def iniciar_sesion(request) :
     if request.method == 'GET' :
@@ -31,16 +31,20 @@ def iniciar_sesion(request) :
                 'error': 'Todos los campos son obligatorios'
         })
 
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is None :
-            return render(request, "pages/iniciar_sesion.html", {
-                'form' : AuthenticationForm,
-                'error' : 'El usuario o la contraseña es incorrecto'
-            })
-        else :
-            login(request, user)
-            return redirect('dashboard')
+        with transaction.atomic():
+            user = User.objects.select_for_update().get(username=username)
+            user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+            if user is None :
+                return render(request, "pages/iniciar_sesion.html", {
+                    'form' : AuthenticationForm,
+                    'error' : 'El usuario o la contraseña es incorrecto'
+                })
+            else :
+                login(request, user)
+                return redirect('dashboard')
 
+
+        
 def crear_cuenta(request) :
     if request.method == 'GET' :
         return render(request, "pages/crear_cuenta.html", {
