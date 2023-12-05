@@ -118,41 +118,74 @@ def boleto_vento(request, evento_id) :
 
 @login_required
 def generar_pdf(request) :
-    doc = SimpleDocTemplate("ticket.pdf", pagesize=letter)
-    elementos = []
+  doc = SimpleDocTemplate("ticket.pdf", pagesize=letter)
+  elementos = []
+  # URL de conexión a la base de datos. Asegúrate de reemplazarlo con tu propia URL.
+  mongo_url = 'mongodb+srv://root:qHMEGeaehFj8a0D7@cluster0.px2sqnh.mongodb.net/test'
 
-    # Estilo para los párrafos
-    estilos = getSampleStyleSheet()
+  # Nombre de la base de datos
+  db_name = 'hgowebcampo'
 
-    # Obtenemos la información del card desde la solicitud
-    ticket_info = {
-        'Evento': request.GET.get('title', ''),
-        'Organizador': request.GET.get('organizer', ''),
-        'Fecha': str(request.GET.get('date', '')),  # Convertir a string
-        'Hora': str(request.GET.get('time', '')),  # Convertir a string
-        'Nombre': request.GET.get('nombre', ''),
-        'Apellido': request.GET.get('apellido', ''),
-    }
+  # Crear una instancia del cliente MongoDB
+  client = MongoClient(mongo_url)
 
-    # Crear una tarjeta para la información del ticket
-    tarjeta = [
-        Paragraph(f"<b>{clave}:</b> {valor}", estilos['BodyText']) for clave, valor in ticket_info.items()
-    ]
+  # Conectar a la base de datos
+  db = client[db_name]
 
-    elementos.extend(tarjeta)
-    elementos.append(Spacer(1, 12))  # Espaciador entre tarjetas
-    doc.build(elementos)
+  # Colección de boletos
+  boletos_collection = db['boletos']
 
+  # Puedes acceder al objeto User del usuario autenticado
+  usuario = request.user
 
-    pdf = open('ticket.pdf', 'rb')
+  nombre = usuario.first_name
+  apellido = usuario.last_name
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="ticket.pdf"'
+  # Agregar boletos con referencia a usuarios
+  nuevos_boletos = {
+      'Evento': request.GET.get('title', ''),
+      'Organizador': request.GET.get('organizer', ''),
+      'Fecha': str(request.GET.get('date', '')), # Convertir a string
+      'Hora': str(request.GET.get('time', '')), # Convertir a string
+      'Nombre': nombre,
+      'Apellido': apellido,
+  }
 
-    return response 
-    return render(request, "pages/dashboard.html", {
-        'alerta' : 'Boleto virtual descargado correctamente'
-    })
+  # Insertar los boletos en la base de datos
+  boletos_collection.insert_one(nuevos_boletos)
+
+  # Estilo para los párrafos
+  estilos = getSampleStyleSheet()
+
+  # Obtenemos la información del card desde la solicitud
+  ticket_info = {
+      'Evento': request.GET.get('title', ''),
+      'Organizador': request.GET.get('organizer', ''),
+      'Fecha': str(request.GET.get('date', '')), # Convertir a string
+      'Hora': str(request.GET.get('time', '')), # Convertir a string
+      'Nombre': request.GET.get('nombre', ''),
+      'Apellido': request.GET.get('apellido', ''),
+  }
+
+  # Crear una tarjeta para la información del ticket
+  tarjeta = [
+      Paragraph(f"<b>{clave}:</b> {valor}", estilos['BodyText']) for clave, valor in ticket_info.items()
+  ]
+
+  elementos.extend(tarjeta)
+  elementos.append(Spacer(1, 12)) # Espaciador entre tarjetas
+  doc.build(elementos)
+
+  pdf = open('ticket.pdf', 'rb')
+
+  response = HttpResponse(pdf, content_type='application/pdf')
+  response['Content-Disposition'] = 'attachment; filename="ticket.pdf"'
+
+  return response 
+
+  return render(request, "pages/dashboard.html", {
+      'alerta' : 'Boleto virtual descargado correctamente'
+  })
 
 # Función para realizar la consulta a la base de datos MongoDB
 def consultar_base_de_datos():
