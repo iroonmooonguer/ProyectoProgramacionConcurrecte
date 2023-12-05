@@ -12,6 +12,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .models import Evento
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 def iniciar_sesion(request) :
@@ -77,6 +80,23 @@ def crear_cuenta(request) :
             'form' : UserCreationForm,
             'error' : 'Las contraseñas no coinciden'
         })
+    
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Mantener la sesión activa del usuario
+            messages.success(request, 'Tu contraseña ha sido actualizada.')
+            return redirect('mi_perfil')  # Redirige al perfil
+        else:
+            messages.error(request, 'Por favor, corrige los errores abajo.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'pages/change_password.html', {'form': form})
+
+   
 
 @login_required 
 def dashboard(request) :
@@ -88,9 +108,21 @@ def cerrar_sesion(request) :
     return redirect('home')
 
 @login_required
-def mi_perfil(request) :
-    return render(request, "pages/perfil.html", {})
+def mi_perfil(request):
+   
 
+    # Obtener datos del usuario para mostrar en el perfil
+    usuario = request.user
+    nombre = usuario.first_name
+    apellido = usuario.last_name
+    email = usuario.email
+    
+    # Renderiza la página de perfil con el formulario y los datos del usuario
+    return render(request, 'pages/perfil.html', {
+        'nombre': nombre,
+        'apellido': apellido,
+        'email': email,
+    })
 @login_required
 def eventos(request) :
     eventos = Evento.objects.all()

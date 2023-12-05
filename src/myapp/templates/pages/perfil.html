@@ -3,5 +3,22 @@
 {% block content %}
 <h1 class="text-center text-4xl mt-10 font-extrabold">Perfil</h1>
 
-{% endblock %}
+<div class="flex items-center justify-center">
+    <div class="relative flex flex-col m-6 space-y-8 rounded-2xl md:flex-row md:space-y-0">
+        <div class="flex flex-col justify-center p-8 md:p-14">
+            <a href="{% url 'change_password'%}"><p>Cambiar contraseña</p></a>
+            <div class="py-2">
+                <label class="mb-2 text-md">Nombre</label>
+                <input type="text" class="mb-5 flex-1 bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed" value="{{ nombre }} {{ apellido }}" disabled>
+            </div>
 
+            <div class="py-2">
+                <label class="mb-2 text-md">Correo</label>
+                <input type="text" class="mb-5 flex-1 bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed" value="{{ email }}" disabled>
+            </div>
+            
+           
+        </div>
+    </div>
+</div>
+{% endblock %}
