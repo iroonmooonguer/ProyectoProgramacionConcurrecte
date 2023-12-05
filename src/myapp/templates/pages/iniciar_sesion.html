@@ -8,13 +8,14 @@
                 <span class="font-light text-gray-400 mb-8">Inicia sesión</span>
                 {% if error %}
                 <div id="alerta-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{error}}</span>
+                    <strong>Error:</strong> <span class="block sm:inline">{{ error }}</span>
+                    <!-- Agregar enlace para restablecer la contraseña aquí -->
+                    <div><a href="{% url 'password_reset' %}" class="text-blue-600 hover:text-blue-700">¿Olvidaste tu contraseña?</a></div>
                 </div>
-                {% endif %} 
+                {% endif %}
                 
                 <form method="post">
-                    
-                {% csrf_token %}
+                    {% csrf_token %}
                     <div class="py-4">
                         <label class="mb-2 text-md">Nombre de usuario</label>
                         <input type="text" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="username" id="username">
@@ -23,11 +24,13 @@
                     <div class="py-4">
                         <label class="mb-2 text-md">Contraseña</label>
                         <input type="password" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" name="password" id="password">
+                        <!-- Agregar enlace para restablecer la contraseña aquí también si se prefiere fuera del mensaje de error -->
+                        <div class="text-sm text-right"><a href="{% url 'password_reset' %}" class="text-blue-600 hover:text-blue-700">¿Olvidaste tu contraseña?</a></div>
                     </div>
                     <button class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-blue-700">Iniciar sesión</button>
                 </form>
-                    <div class="text-center text-gray-400">
-                    ¿No tienes una cuenta? <a href="{% url 'signup'%}" class="font-bold text-black">Crea una</a>
+                <div class="text-center text-gray-400">
+                    ¿No tienes una cuenta? <a href="{% url 'signup' %}" class="font-bold text-black">Crea una</a>
                 </div> 
             </div>
             <div class="relative">
@@ -35,6 +38,4 @@
             </div>
         </div>
     </div>
-</form>
-
 {% endblock %}
